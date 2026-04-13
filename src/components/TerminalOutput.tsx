@@ -57,8 +57,7 @@ export default function TerminalOutput({ studentName, filename, outputResult }: 
   const winName = baseName.charAt(0).toUpperCase() + baseName.slice(1).toLowerCase();
   const unixName = baseName.toLowerCase();
   
-  const hashString = studentName + filename;
-  const hash = hashString.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hash = studentName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const theme = themes[hash % themes.length];
   const font = fonts[hash % fonts.length];
   
