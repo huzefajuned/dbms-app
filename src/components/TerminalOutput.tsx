@@ -13,37 +13,37 @@ interface TerminalOutputProps {
 const themes = [
   {
     type: "mac",
-    bg: "bg-white print:bg-white", border: "border-gray-300 print:border-gray-300",
-    headerBg: "bg-gray-100 print:bg-gray-100", headerBorder: "border-gray-300 print:border-gray-300",
-    text: "text-gray-900 print:text-black", titleText: "text-gray-700 print:text-gray-700",
+    bg: "bg-[#1e1e1e] print:bg-[#1e1e1e]", border: "border-gray-600 print:border-gray-600",
+    headerBg: "bg-[#323233] print:bg-[#323233]", headerBorder: "border-[#1e1e1e] print:border-[#1e1e1e]",
+    text: "text-[#d4d4d4] print:text-[#d4d4d4]", titleText: "text-gray-300 print:text-gray-300",
     title: "Terminal", showDots: true,
   },
   {
     type: "cmd",
-    bg: "bg-white print:bg-white", border: "border-gray-300 print:border-gray-300",
-    headerBg: "bg-gray-50 print:bg-gray-50", headerBorder: "border-gray-300 print:border-gray-300",
-    text: "text-gray-900 print:text-black", titleText: "text-gray-700 print:text-gray-700",
+    bg: "bg-[#000000] print:bg-[#000000]", border: "border-gray-500 print:border-gray-500",
+    headerBg: "bg-[#ffffff] print:bg-[#ffffff]", headerBorder: "border-gray-500 print:border-gray-500",
+    text: "text-[#c0c0c0] print:text-[#c0c0c0]", titleText: "text-gray-900 print:text-gray-900",
     title: "C:\\WINDOWS\\system32\\cmd.exe", showDots: false,
   },
   {
     type: "powershell",
-    bg: "bg-[#f8f9fa] print:bg-white", border: "border-gray-300 print:border-gray-300",
-    headerBg: "bg-gray-100 print:bg-gray-100", headerBorder: "border-gray-300 print:border-gray-300",
-    text: "text-[#012456] print:text-[#012456]", titleText: "text-gray-700 print:text-gray-700",
+    bg: "bg-[#012456] print:bg-[#012456]", border: "border-[#012456] print:border-[#012456]",
+    headerBg: "bg-[#eeeeee] print:bg-[#eeeeee]", headerBorder: "border-gray-400 print:border-gray-400",
+    text: "text-[#ffffff] print:text-[#ffffff]", titleText: "text-gray-900 print:text-gray-900",
     title: "Windows PowerShell", showDots: false,
   },
   {
     type: "ubuntu",
-    bg: "bg-white print:bg-white", border: "border-gray-300 print:border-gray-300",
-    headerBg: "bg-[#e5e5e5] print:bg-[#e5e5e5]", headerBorder: "border-gray-300 print:border-gray-300",
-    text: "text-[#300a24] print:text-[#300a24]", titleText: "text-gray-800 print:text-gray-800",
+    bg: "bg-[#300a24] print:bg-[#300a24]", border: "border-[#533549] print:border-[#533549]",
+    headerBg: "bg-[#433f42] print:bg-[#433f42]", headerBorder: "border-[#300a24] print:border-[#300a24]",
+    text: "text-[#ffffff] print:text-[#ffffff]", titleText: "text-gray-200 print:text-gray-200",
     title: "user@ubuntu: ~", showDots: true,
   },
   {
     type: "gitbash",
-    bg: "bg-white print:bg-white", border: "border-gray-300 print:border-gray-300",
-    headerBg: "bg-gray-100 print:bg-gray-100", headerBorder: "border-gray-300 print:border-gray-300",
-    text: "text-gray-900 print:text-black", titleText: "text-gray-700 print:text-gray-700",
+    bg: "bg-[#000000] print:bg-[#000000]", border: "border-gray-600 print:border-gray-600",
+    headerBg: "bg-[#f4f4f4] print:bg-[#f4f4f4]", headerBorder: "border-gray-300 print:border-gray-300",
+    text: "text-[#bfbfbf] print:text-[#bfbfbf]", titleText: "text-gray-800 print:text-gray-800",
     title: "MINGW64:/c/Users", showDots: false,
   }
 ];
@@ -57,7 +57,8 @@ export default function TerminalOutput({ studentName, filename, outputResult }: 
   const winName = baseName.charAt(0).toUpperCase() + baseName.slice(1).toLowerCase();
   const unixName = baseName.toLowerCase();
   
-  const hash = studentName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hashString = studentName + filename;
+  const hash = hashString.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const theme = themes[hash % themes.length];
   const font = fonts[hash % fonts.length];
   
