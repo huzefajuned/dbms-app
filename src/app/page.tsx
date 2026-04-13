@@ -47,7 +47,7 @@ export default function Home() {
               <Database className="text-white w-8 h-8" strokeWidth={1.5} />
             </div>
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 mb-2 tracking-tight">
-              DBMS Lab Generator
+              Database Management Systems Lab Generator
             </h1>
             <p className="text-gray-500/90 text-[15px] font-medium max-w-xs">
               Instant realistic laboratory records. Enter your details to begin.
@@ -121,7 +121,7 @@ export default function Home() {
               className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-[15px] font-bold rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-all shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] active:scale-[0.98] overflow-hidden mt-8"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Generate Full 10-Program DBMS Lab Record
+                Generate Full 15-Program Database Management Systems Lab Record
               </span>
               <div className="absolute inset-0 h-full w-full opacity-0 group-hover:opacity-20 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:250%_250%,100%_100%] animate-[shimmer_1.5s_infinite] transition-opacity"></div>
             </button>

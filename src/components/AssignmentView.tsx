@@ -62,11 +62,11 @@ export default function AssignmentView({ studentName, rollNumber, enrolmentNumbe
       >
         <div className="flex flex-col items-center min-h-[1050px] print:min-h-[260mm] text-center pb-12 print:pb-0 break-after-page font-sans bg-white relative print:px-12 print:py-8 print:border-none box-border">
           <h3 className="text-[1.1rem] font-bold mt-[2.5rem] print:mt-0 mb-2 text-gray-900">A Lab Manual For</h3>
-          <h1 className="text-[1.8rem] font-extrabold text-[#3a5b88] mb-2 print:mb-1 uppercase tracking-wide">DBMS LAB</h1>
+          <h1 className="text-[1.8rem] font-extrabold text-[#3a5b88] mb-2 print:mb-1 uppercase tracking-wide">DATABASE MANAGEMENT SYSTEMS LAB</h1>
           <h2 className="text-[1.2rem] font-bold text-[#3a5b88] mb-8 print:mb-4 tracking-widest">{rollNumber}</h2>
 
           <p className="text-[1.05rem] font-medium text-gray-900 mb-6 print:mb-4 max-w-3xl mx-auto uppercase leading-snug">
-            A RECORD SUBMITTED IN PARTIAL FULFILLMENT OF THE REQUIREMENTS<br />FOR &quot;DBMS LAB&quot; OF
+            A RECORD SUBMITTED IN PARTIAL FULFILLMENT OF THE REQUIREMENTS<br />FOR &quot;DATABASE MANAGEMENT SYSTEMS LAB&quot; OF
           </p>
 
           <h3 className="text-[1.15rem] font-bold text-[#b54646] uppercase mb-6 print:mb-4 tracking-wide">MASTER OF COMPUTER APPLICATION</h3>
@@ -131,7 +131,7 @@ export default function AssignmentView({ studentName, rollNumber, enrolmentNumbe
           <h1 className="text-[3.5rem] font-normal mb-20 print:mb-12 leading-none">Certificate</h1>
 
           <div className="text-[1.25rem] leading-[2.6] text-justify px-10 mb-28 print:mb-16 italic">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Certified that this is the Bonafide <strong className="font-bold">DBMS Lab ({rollNumber})</strong> Record of Mr./Ms. <strong className="font-bold bg-yellow-200 px-2 py-1">{studentName}</strong>, Roll No <strong className="font-bold bg-yellow-200 px-2 py-1">{rollNumber}</strong>, <strong className="font-bold">MCA I Year, II Semester</strong>, of the academic year <em className="not-italic">2025-26</em>.
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Certified that this is the Bonafide <strong className="font-bold">Database Management Systems Lab ({rollNumber})</strong> Record of Mr./Ms. <strong className="font-bold bg-yellow-200 px-2 py-1">{studentName}</strong>, Roll No <strong className="font-bold bg-yellow-200 px-2 py-1">{rollNumber}</strong>, <strong className="font-bold">MCA I Year, II Semester</strong>, of the academic year <em className="not-italic">2025-26</em>.
           </div>
 
           <div className="flex justify-center font-bold text-[1.1rem] mb-40 print:mb-20 italic mt-8 print:mt-4">
@@ -175,7 +175,7 @@ export default function AssignmentView({ studentName, rollNumber, enrolmentNumbe
               <div className="p-1 leading-tight text-[15px]">ریمار<br />کس</div>
             </div>
 
-            {Array.from({ length: 8 }).map((_, i) => {
+            {Array.from({ length: 16 }).map((_, i) => {
               const program = programs[i];
               const hasTitle = program?.title;
               return (

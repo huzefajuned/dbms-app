@@ -1,442 +1,370 @@
 export const programs = [
   {
     id: 1,
-    title: "Experiment 1: Convert Entities and Relationships to Relation Table",
-    filename: "Exp1_SchemaDesign.sql",
-    code: `-- Experiment 1: Schema Diagram Mapping
+    title: "1. Create Tables and Display All Records",
+    filename: "Exp1_SelectAll.sql",
+    code: `-- Program 1: Create Schema and Basic Selection
 -- Executed by: {studentName} | {rollNumber}
 
--- 1. COLLEGE DATABASE SCHEMA
-CREATE TABLE STUDENT (USN VARCHAR(20) PRIMARY KEY, SName VARCHAR(50), Address VARCHAR(100), Phone VARCHAR(15), Gender CHAR(1));
-CREATE TABLE SEMSEC (SSID VARCHAR(10) PRIMARY KEY, Sem INT, Sec CHAR(1));
-CREATE TABLE CLASS (USN VARCHAR(20), SSID VARCHAR(10), FOREIGN KEY(USN) REFERENCES STUDENT(USN), FOREIGN KEY(SSID) REFERENCES SEMSEC(SSID));
-CREATE TABLE SUBJECT (Subcode VARCHAR(10) PRIMARY KEY, Title VARCHAR(50), Sem INT, Credits INT);
-CREATE TABLE IAMARKS (USN VARCHAR(20), Subcode VARCHAR(10), SSID VARCHAR(10), Test1 INT, Test2 INT, Test3 INT, FinalIA INT, FOREIGN KEY(USN) REFERENCES STUDENT(USN), FOREIGN KEY(Subcode) REFERENCES SUBJECT(Subcode), FOREIGN KEY(SSID) REFERENCES SEMSEC(SSID));
+CREATE TABLE Customers ( CustomerID INT PRIMARY KEY, CustomerName VARCHAR(50), City VARCHAR(50), Country VARCHAR(50), Age INT );
+CREATE TABLE Orders ( OrderID INT PRIMARY KEY, CustomerID INT, OrderDate DATE, Amount DECIMAL(10,2), FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) );
+CREATE TABLE Employees ( EmpID INT PRIMARY KEY, EmpName VARCHAR(50), Department VARCHAR(50), Salary INT, ManagerID INT );
 
--- 2. COMPANY DATABASE SCHEMA
-CREATE TABLE EMPLOYEE_COMP (SSN VARCHAR(20) PRIMARY KEY, Name VARCHAR(50), Address VARCHAR(100), Sex CHAR(1), Salary DECIMAL(10,2), SuperSSN VARCHAR(20), DNo INT);
-CREATE TABLE DEPARTMENT (DNo INT PRIMARY KEY, DName VARCHAR(50), MgrSSN VARCHAR(20), MgrStartDate DATE);
-CREATE TABLE DLOCATION (DNo INT, DLoc VARCHAR(50), FOREIGN KEY(DNo) REFERENCES DEPARTMENT(DNo));
-CREATE TABLE PROJECT (PNo INT PRIMARY KEY, PName VARCHAR(50), PLocation VARCHAR(50), DNo INT, FOREIGN KEY(DNo) REFERENCES DEPARTMENT(DNo));
-CREATE TABLE WORKS_ON (SSN VARCHAR(20), PNo INT, Hours DECIMAL(5,2), FOREIGN KEY(SSN) REFERENCES EMPLOYEE_COMP(SSN), FOREIGN KEY(PNo) REFERENCES PROJECT(PNo));
+INSERT INTO Customers VALUES (1, 'Amit Sharma', 'Delhi', 'India', 30), (2, 'John Smith', 'New York', 'USA', 40), (3, 'Sara Khan', 'Mumbai', 'India', 25), (4, 'David Miller', 'London', 'UK', 35), (5, 'Priya Verma', 'Hyderabad', 'India', 28), (6, 'Michael Brown', 'Chicago', 'USA', 45), (7, 'Anjali Gupta', 'Jaipur', 'India', 22), (8, 'Robert Wilson', 'Toronto', 'Canada', 38);
+INSERT INTO Orders VALUES (101, 1, '2024-01-10', 5000), (102, 2, '2024-01-12', 7000), (103, 3, '2024-02-05', 3000), (104, 1, '2024-02-20', 4500), (105, 5, '2024-03-15', 6000), (106, 7, '2024-03-18', 2000);
+INSERT INTO Employees VALUES (1, 'Rahul Mehta', 'IT', 60000, NULL), (2, 'Sneha Reddy', 'HR', 45000, 1), (3, 'Arjun Patel', 'Finance', 55000, 1), (4, 'Neha Singh', 'IT', 65000, 1), (5, 'Vikram Rao', 'Sales', 40000, 2), (6, 'Pooja Sharma', 'HR', 42000, 2), (7, 'Karan Malhotra', 'IT', 70000, 1), (8, 'Meena Iyer', 'Finance', 50000, 3);
 
-SELECT 'COLLEGE DATABASE and COMPANY DATABASE Schemas constructed successfully' AS Status;
+-- Q: Display all records from the Customers table.
+SELECT * FROM Customers;
 `,
-    outputTemplate: `mysql> source Exp1_SchemaDesign.sql;
+    outputTemplate: `mysql> source Exp1_SelectAll.sql;
 Query OK, 0 rows affected (0.01 sec)
 Query OK, 0 rows affected (0.01 sec)
 Query OK, 0 rows affected (0.01 sec)
-Query OK, 0 rows affected (0.02 sec)
-Query OK, 0 rows affected (0.02 sec)
+Query OK, 8 rows affected (0.00 sec)
+Query OK, 6 rows affected (0.01 sec)
+Query OK, 8 rows affected (0.00 sec)
 
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 0 rows affected (0.01 sec)
-
-+------------------------------------------------------------------------+
-| Status                                                                 |
-+------------------------------------------------------------------------+
-| COLLEGE DATABASE and COMPANY DATABASE Schemas constructed successfully |
-+------------------------------------------------------------------------+
-1 row in set (0.00 sec)`
++------------+---------------+-----------+---------+------+
+| CustomerID | CustomerName  | City      | Country | Age  |
++------------+---------------+-----------+---------+------+
+|          1 | Amit Sharma   | Delhi     | India   |   30 |
+|          2 | John Smith    | New York  | USA     |   40 |
+|          3 | Sara Khan     | Mumbai    | India   |   25 |
+|          4 | David Miller  | London    | UK      |   35 |
+|          5 | Priya Verma   | Hyderabad | India   |   28 |
+|          6 | Michael Brown | Chicago   | USA     |   45 |
+|          7 | Anjali Gupta  | Jaipur    | India   |   22 |
+|          8 | Robert Wilson | Toronto   | Canada  |   38 |
++------------+---------------+-----------+---------+------+
+8 rows in set (0.00 sec)`
   },
   {
     id: 2,
-    title: "Experiment 2: Relational Algebra Queries (MOVIE DATABASE)",
-    filename: "Exp2_RelationalAlgebra.sql",
-    code: `-- Experiment 2: Relational Algebra Queries on MOVIE DATABASE
+    title: "2. Display Specific Columns",
+    filename: "Exp2_ProjectColumns.sql",
+    code: `-- Program 2: Projections
 -- Executed by: {studentName} | {rollNumber}
 
--- Database Initialisation
-CREATE TABLE Movies (title VARCHAR(50), director VARCHAR(50), myear INT, rating DECIMAL(3,1));
-CREATE TABLE Acts (actor VARCHAR(50), title VARCHAR(50));
-INSERT INTO Movies VALUES ('Fargo', 'Coen', 1996, 8.1), ('The Big Lebowski', 'Coen', 1998, 8.1), ('L.A. Confidential', 'Hanson', 1997, 8.2), ('8 Mile', 'Hanson', 2002, 7.2);
-INSERT INTO Acts VALUES ('McDormand', 'Fargo'), ('Bridges', 'The Big Lebowski'), ('Eminem', '8 Mile');
-
--- 1. Find movies made after 1997; σ_myear>1997 (Movies)
-SELECT * FROM Movies WHERE myear > 1997;
-
--- 2. Find movies made by Hanson after 1997
-SELECT * FROM Movies WHERE director = 'Hanson' AND myear > 1997;
-
--- 3. Find all movies and their ratings; π_title,rating (Movies)
-SELECT title, rating FROM Movies;
-
--- 4. Find all actors and directors; π_actor(Acts) ∪ π_director(Movies)
-SELECT actor AS Name FROM Acts
-UNION
-SELECT director AS Name FROM Movies;
-
--- 5. Find Coen's movies with McDormand; π_title(σ_actor="McDormand"(Acts)) ∩ π_title(σ_director="Coen"(Movies))
-SELECT m.title 
-FROM Movies m 
-JOIN Acts a ON m.title = a.title 
-WHERE m.director = 'Coen' AND a.actor = 'McDormand';
+-- Q: Display only CustomerName and City from Customers.
+SELECT CustomerName, City FROM Customers;
 `,
-    outputTemplate: `mysql> source Exp2_RelationalAlgebra.sql;
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 4 rows affected (0.00 sec)
-Query OK, 3 rows affected (0.00 sec)
-
-+------------------+----------+-------+--------+
-| title            | director | myear | rating |
-+------------------+----------+-------+--------+
-| The Big Lebowski | Coen     |  1998 |    8.1 |
-| 8 Mile           | Hanson   |  2002 |    7.2 |
-+------------------+----------+-------+--------+
-2 rows in set (0.00 sec)
-
-+--------+----------+-------+--------+
-| title  | director | myear | rating |
-+--------+----------+-------+--------+
-| 8 Mile | Hanson   |  2002 |    7.2 |
-+--------+----------+-------+--------+
-1 row in set (0.00 sec)
-
-+-------------------+--------+
-| title             | rating |
-+-------------------+--------+
-| Fargo             |    8.1 |
-| The Big Lebowski  |    8.1 |
-| L.A. Confidential |    8.2 |
-| 8 Mile            |    7.2 |
-+-------------------+--------+
-4 rows in set (0.00 sec)
-
-+-----------+
-| Name      |
-+-----------+
-| McDormand |
-| Bridges   |
-| Eminem    |
-| Coen      |
-| Hanson    |
-+-----------+
-5 rows in set (0.00 sec)
-
-+-------+
-| title |
-+-------+
-| Fargo |
-+-------+
-1 row in set (0.00 sec)`
+    outputTemplate: `mysql> source Exp2_ProjectColumns.sql;
++---------------+-----------+
+| CustomerName  | City      |
++---------------+-----------+
+| Amit Sharma   | Delhi     |
+| John Smith    | New York  |
+| Sara Khan     | Mumbai    |
+| David Miller  | London    |
+| Priya Verma   | Hyderabad |
+| Michael Brown | Chicago   |
+| Anjali Gupta  | Jaipur    |
+| Robert Wilson | Toronto   |
++---------------+-----------+
+8 rows in set (0.00 sec)`
   },
   {
     id: 3,
-    title: "Experiment 3: Northwind Database Operations",
-    filename: "Exp3_Northwind.sql",
-    code: `-- Experiment 3: Northwind Database Operations
+    title: "3. Retrieving Unique Records",
+    filename: "Exp3_DistinctKeys.sql",
+    code: `-- Program 3: Distinct Keyword
 -- Executed by: {studentName} | {rollNumber}
 
--- 1. Create northwind database
-CREATE DATABASE IF NOT EXISTS northwind;
-
--- 2. Viewing all databases
-SHOW DATABASES;
-
-USE northwind;
-
--- 4. Creating Tables customers and employees
-CREATE TABLE IF NOT EXISTS customers ( 
-  id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-  company VARCHAR(50) NULL DEFAULT NULL, 
-  last_name VARCHAR(50) NULL DEFAULT NULL, 
-  first_name VARCHAR(50) NULL DEFAULT NULL, 
-  city VARCHAR(50) NULL DEFAULT NULL 
-);
-
-CREATE TABLE IF NOT EXISTS employees ( 
-  id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-  company VARCHAR(50) NULL DEFAULT NULL, 
-  last_name VARCHAR(50) NULL DEFAULT NULL, 
-  first_name VARCHAR(50) NULL DEFAULT NULL, 
-  job_title VARCHAR(50) NULL DEFAULT NULL 
-);
-
--- 3. Viewing all Tables in a northwind Database
-SHOW TABLES;
-
--- 5. Inserting in a Table
-INSERT INTO customers (company, last_name, first_name, city) VALUES 
-('Company A', 'Bedecs', 'Anna', 'Seattle'),
-('Company B', 'Gratacos Solsona', 'Antonio', 'Boston');
-
-INSERT INTO employees (company, last_name, first_name, job_title) VALUES 
-('Northwind Traders', 'Freehafer', 'Nancy', 'Sales Representative'),
-('Northwind Traders', 'Cencini', 'Andrew', 'Vice President, Sales');
-
-SELECT * FROM customers LIMIT 2;
+-- Q: Show unique list of countries from Customers.
+SELECT DISTINCT Country FROM Customers;
 `,
-    outputTemplate: `mysql> source Exp3_Northwind.sql;
-Query OK, 1 row affected (0.01 sec)
-
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| mysql              |
-| northwind          |
-| performance_schema |
-| sys                |
-+--------------------+
-5 rows in set (0.00 sec)
-
-Database changed
-Query OK, 0 rows affected (0.02 sec)
-Query OK, 0 rows affected (0.02 sec)
-
-+---------------------+
-| Tables_in_northwind |
-+---------------------+
-| customers           |
-| employees           |
-+---------------------+
-2 rows in set (0.00 sec)
-
-Query OK, 2 rows affected (0.01 sec)
-Records: 2  Duplicates: 0  Warnings: 0
-Query OK, 2 rows affected (0.01 sec)
-Records: 2  Duplicates: 0  Warnings: 0
-
-+----+-----------+------------------+------------+---------+
-| id | company   | last_name        | first_name | city    |
-+----+-----------+------------------+------------+---------+
-|  1 | Company A | Bedecs           | Anna       | Seattle |
-|  2 | Company B | Gratacos Solsona | Antonio    | Boston  |
-+----+-----------+------------------+------------+---------+
-2 rows in set (0.00 sec)`
+    outputTemplate: `mysql> source Exp3_DistinctKeys.sql;
++---------+
+| Country |
++---------+
+| India   |
+| USA     |
+| UK      |
+| Canada  |
++---------+
+4 rows in set (0.00 sec)`
   },
   {
     id: 4,
-    title: "Experiment 4: Altering Table (DEPT)",
-    filename: "Exp4_DeptAlter.sql",
-    code: `-- Experiment 4: Consider Dept table and Altering Constraints
+    title: "4. Filtering Rows Using WHERE",
+    filename: "Exp4_WhereClause.sql",
+    code: `-- Program 4: Numeric Filters
 -- Executed by: {studentName} | {rollNumber}
 
-CREATE TABLE DEPT (DEPTNO INTEGER PRIMARY KEY, DNAME VARCHAR(10), LOC VARCHAR(4));
-
--- 1. Rename the table dept as department
-ALTER TABLE DEPT RENAME TO DEPARTMENT;
-SELECT 'Table altered.' AS Status;
-
--- 2. Add a new column PINCODE with not null constraints to the existing table
-ALTER TABLE DEPARTMENT ADD (PINCODE INT NOT NULL);
-DESC DEPARTMENT;
-
--- 3. Drop column LOC
-ALTER TABLE DEPARTMENT DROP COLUMN LOC;
-SELECT 'Table altered.' AS Status;
-
--- 4. Rename the column DNAME to DEPT_NAME in dept table
-ALTER TABLE DEPARTMENT CHANGE DNAME Dept_Name VARCHAR(100);
-DESC DEPARTMENT;
-
--- 5. Change the datatype of column pincode as CHAR with size 10
-ALTER TABLE DEPARTMENT MODIFY COLUMN PINCODE CHAR(10);
-DESC DEPARTMENT;
-
--- 6. Delete table
-DROP TABLE DEPARTMENT;
-SELECT 'Table dropped.' AS Status;
+-- Q: Display all employees with salary greater than 50,000.
+SELECT * FROM Employees WHERE Salary > 50000;
 `,
-    outputTemplate: `mysql> source Exp4_DeptAlter.sql;
-Query OK, 0 rows affected (0.02 sec)
-
-Query OK, 0 rows affected (0.02 sec)
-+----------------+
-| Status         |
-+----------------+
-| Table altered. |
-+----------------+
-1 row in set (0.00 sec)
-
-Query OK, 0 rows affected (0.01 sec)
-+---------+-------------+------+-----+---------+-------+
-| Field   | Type        | Null | Key | Default | Extra |
-+---------+-------------+------+-----+---------+-------+
-| DEPTNO  | int(11)     | NO   | PRI | NULL    |       |
-| DNAME   | varchar(10) | YES  |     | NULL    |       |
-| LOC     | varchar(4)  | YES  |     | NULL    |       |
-| PINCODE | int(11)     | NO   |     | NULL    |       |
-+---------+-------------+------+-----+---------+-------+
-4 rows in set (0.00 sec)
-
-Query OK, 0 rows affected (0.02 sec)
-+----------------+
-| Status         |
-+----------------+
-| Table altered. |
-+----------------+
-1 row in set (0.00 sec)
-
-Query OK, 0 rows affected (0.01 sec)
-+-----------+--------------+------+-----+---------+-------+
-| Field     | Type         | Null | Key | Default | Extra |
-+-----------+--------------+------+-----+---------+-------+
-| DEPTNO    | int(11)      | NO   | PRI | NULL    |       |
-| Dept_Name | varchar(100) | YES  |     | NULL    |       |
-| PINCODE   | int(11)      | NO   |     | NULL    |       |
-+-----------+--------------+------+-----+---------+-------+
-3 rows in set (0.00 sec)
-
-Query OK, 0 rows affected (0.02 sec)
-+-----------+--------------+------+-----+---------+-------+
-| Field     | Type         | Null | Key | Default | Extra |
-+-----------+--------------+------+-----+---------+-------+
-| DEPTNO    | int(11)      | NO   | PRI | NULL    |       |
-| Dept_Name | varchar(100) | YES  |     | NULL    |       |
-| PINCODE   | char(10)     | YES  |     | NULL    |       |
-+-----------+--------------+------+-----+---------+-------+
-3 rows in set (0.00 sec)
-
-Query OK, 0 rows affected (0.01 sec)
-+----------------+
-| Status         |
-+----------------+
-| Table dropped. |
-+----------------+
-1 row in set (0.00 sec)`
+    outputTemplate: `mysql> source Exp4_WhereClause.sql;
++-------+----------------+------------+--------+-----------+
+| EmpID | EmpName        | Department | Salary | ManagerID |
++-------+----------------+------------+--------+-----------+
+|     1 | Rahul Mehta    | IT         |  60000 |      NULL |
+|     3 | Arjun Patel    | Finance    |  55000 |         1 |
+|     4 | Neha Singh     | IT         |  65000 |         1 |
+|     7 | Karan Malhotra | IT         |  70000 |         1 |
++-------+----------------+------------+--------+-----------+
+4 rows in set (0.00 sec)`
   },
   {
     id: 5,
-    title: "Experiment 5: Queries on EMPLOYEE table",
-    filename: "Exp5_EmployeeQueries.sql",
-    code: `-- Experiment 5: Consider Employee table and Queries
+    title: "5. Text Matching Filters",
+    filename: "Exp5_StringMatch.sql",
+    code: `-- Program 5: String Matching Filters
 -- Executed by: {studentName} | {rollNumber}
 
-CREATE TABLE EMPLOYEE (
-  EMPNO VARCHAR(20) PRIMARY KEY, EMP_NAME VARCHAR(20), DEPT VARCHAR(20), 
-  salary INTEGER, DOJ DATE, branch VARCHAR(20)
-);
-
-INSERT INTO EMPLOYEE VALUES
-('E101', 'Amit', 'production', 45000, '2000-03-12', 'Bangalore'),
-('E102', 'sunita', 'HR', 70000, '2019-07-03', 'Bangalore'),
-('E103', 'sunita', 'management', 120000, '2019-01-11', 'mysore'),
-('E104', 'Amit', 'IT', 67000, '2020-08-01', 'Bangalore'),
-('E105', 'mahesh', 'Civil', 145000, '2020-09-12', 'mumbai'),
-('E106', 'Amit', 'IT', 67000, '2020-03-12', 'Bangalore');
-
--- 1. Display all the fields of employee table
-SELECT * FROM EMPLOYEE;
-
--- 2. Retrieve employee number and their salary
-SELECT EMPNO, salary FROM EMPLOYEE;
-
--- 3. Retrieve average salary of all employee
-SELECT AVG(salary) FROM EMPLOYEE;
-
--- 4. Retrieve number of employee
-SELECT COUNT(*) FROM EMPLOYEE;
-
--- 5. Retrieve total salary of employee group by employee name and count similar names
-SELECT EMP_NAME, SUM(salary), COUNT(*) FROM EMPLOYEE GROUP BY EMP_NAME;
-
--- 6. Retrieve total salary of employee which is greater than >120000 (Adjusted 145000)
-SELECT EMP_NAME, SUM(salary) FROM EMPLOYEE GROUP BY EMP_NAME HAVING SUM(salary) >= 145000;
-
--- 7. Display name of employee in descending order
-SELECT EMP_NAME FROM EMPLOYEE ORDER BY EMP_NAME DESC;
-
--- 8. Display name of employee in ascending order
-SELECT EMP_NAME FROM EMPLOYEE ORDER BY EMP_NAME ASC;
-
--- 9. Display details of employee whose name is AMIT and salary greater than 50000
-SELECT * FROM EMPLOYEE WHERE EMP_NAME='Amit' AND salary > 50000;
+-- Q: Show customers from India.
+SELECT * FROM Customers WHERE Country = 'India';
 `,
-    outputTemplate: `mysql> source Exp5_EmployeeQueries.sql;
-Query OK, 0 rows affected (0.01 sec)
-Query OK, 6 rows affected (0.00 sec)
+    outputTemplate: `mysql> source Exp5_StringMatch.sql;
++------------+--------------+-----------+---------+------+
+| CustomerID | CustomerName | City      | Country | Age  |
++------------+--------------+-----------+---------+------+
+|          1 | Amit Sharma  | Delhi     | India   |   30 |
+|          3 | Sara Khan    | Mumbai    | India   |   25 |
+|          5 | Priya Verma  | Hyderabad | India   |   28 |
+|          7 | Anjali Gupta | Jaipur    | India   |   22 |
++------------+--------------+-----------+---------+------+
+4 rows in set (0.00 sec)`
+  },
+  {
+    id: 6,
+    title: "6. Compound Conditions (AND)",
+    filename: "Exp6_LogicalAnd.sql",
+    code: `-- Program 6: Logical AND Operators
+-- Executed by: {studentName} | {rollNumber}
 
-+-------+----------+------------+--------+------------+-----------+
-| EMPNO | EMP_NAME | DEPT       | salary | DOJ        | branch    |
-+-------+----------+------------+--------+------------+-----------+
-| E101  | Amit     | production |  45000 | 2000-03-12 | Bangalore |
-| E102  | sunita   | HR         |  70000 | 2019-07-03 | Bangalore |
-| E103  | sunita   | management | 120000 | 2019-01-11 | mysore    |
-| E104  | Amit     | IT         |  67000 | 2020-08-01 | Bangalore |
-| E105  | mahesh   | Civil      | 145000 | 2020-09-12 | mumbai    |
-| E106  | Amit     | IT         |  67000 | 2020-03-12 | Bangalore |
-+-------+----------+------------+--------+------------+-----------+
-6 rows in set (0.00 sec)
+-- Q: Display customers whose age is greater than 25 AND city is Delhi.
+SELECT * FROM Customers WHERE Age > 25 AND City = 'Delhi';
+`,
+    outputTemplate: `mysql> source Exp6_LogicalAnd.sql;
++------------+-------------+-------+---------+------+
+| CustomerID | CustomerName| City  | Country | Age  |
++------------+-------------+-------+---------+------+
+|          1 | Amit Sharma | Delhi | India   |   30 |
++------------+-------------+-------+---------+------+
+1 row in set (0.00 sec)`
+  },
+  {
+    id: 7,
+    title: "7. Compound Conditions (OR)",
+    filename: "Exp7_LogicalOr.sql",
+    code: `-- Program 7: Logical OR Operators
+-- Executed by: {studentName} | {rollNumber}
 
-+-------+--------+
-| EMPNO | salary |
-+-------+--------+
-| E101  |  45000 |
-| E102  |  70000 |
-| E103  | 120000 |
-| E104  |  67000 |
-| E105  | 145000 |
-| E106  |  67000 |
-+-------+--------+
-6 rows in set (0.00 sec)
+-- Q: Show employees who work in HR OR IT department.
+SELECT * FROM Employees WHERE Department = 'HR' OR Department = 'IT';
+`,
+    outputTemplate: `mysql> source Exp7_LogicalOr.sql;
++-------+----------------+------------+--------+-----------+
+| EmpID | EmpName        | Department | Salary | ManagerID |
++-------+----------------+------------+--------+-----------+
+|     1 | Rahul Mehta    | IT         |  60000 |      NULL |
+|     2 | Sneha Reddy    | HR         |  45000 |         1 |
+|     4 | Neha Singh     | IT         |  65000 |         1 |
+|     6 | Pooja Sharma   | HR         |  42000 |         2 |
+|     7 | Karan Malhotra | IT         |  70000 |         1 |
++-------+----------------+------------+--------+-----------+
+5 rows in set (0.00 sec)`
+  },
+  {
+    id: 8,
+    title: "8. Negation Filtering (NOT)",
+    filename: "Exp8_LogicalNot.sql",
+    code: `-- Program 8: Logical NOT Operator
+-- Executed by: {studentName} | {rollNumber}
 
-+-------------+
-| AVG(salary) |
-+-------------+
-|  85666.6667 |
-+-------------+
+-- Q: Display customers NOT from USA.
+SELECT * FROM Customers WHERE Country != 'USA';
+`,
+    outputTemplate: `mysql> source Exp8_LogicalNot.sql;
++------------+---------------+-----------+---------+------+
+| CustomerID | CustomerName  | City      | Country | Age  |
++------------+---------------+-----------+---------+------+
+|          1 | Amit Sharma   | Delhi     | India   |   30 |
+|          3 | Sara Khan     | Mumbai    | India   |   25 |
+|          4 | David Miller  | London    | UK      |   35 |
+|          5 | Priya Verma   | Hyderabad | India   |   28 |
+|          7 | Anjali Gupta  | Jaipur    | India   |   22 |
+|          8 | Robert Wilson | Toronto   | Canada  |   38 |
++------------+---------------+-----------+---------+------+
+6 rows in set (0.00 sec)`
+  },
+  {
+    id: 9,
+    title: "9. Sorting Data (ORDER BY DESC)",
+    filename: "Exp9_SortDesc.sql",
+    code: `-- Program 9: Ordering Result Sets Descending
+-- Executed by: {studentName} | {rollNumber}
+
+-- Q: Sort employees by salary in descending order.
+SELECT * FROM Employees ORDER BY Salary DESC;
+`,
+    outputTemplate: `mysql> source Exp9_SortDesc.sql;
++-------+----------------+------------+--------+-----------+
+| EmpID | EmpName        | Department | Salary | ManagerID |
++-------+----------------+------------+--------+-----------+
+|     7 | Karan Malhotra | IT         |  70000 |         1 |
+|     4 | Neha Singh     | IT         |  65000 |         1 |
+|     1 | Rahul Mehta    | IT         |  60000 |      NULL |
+|     3 | Arjun Patel    | Finance    |  55000 |         1 |
+|     8 | Meena Iyer     | Finance    |  50000 |         3 |
+|     2 | Sneha Reddy    | HR         |  45000 |         1 |
+|     6 | Pooja Sharma   | HR         |  42000 |         2 |
+|     5 | Vikram Rao     | Sales      |  40000 |         2 |
++-------+----------------+------------+--------+-----------+
+8 rows in set (0.00 sec)`
+  },
+  {
+    id: 10,
+    title: "10. Compound Sorting (Multiple Columns)",
+    filename: "Exp10_SortMultiple.sql",
+    code: `-- Program 10: Matrix Sorting Requirements
+-- Executed by: {studentName} | {rollNumber}
+
+-- Q: Sort customers by Country and then CustomerName.
+SELECT * FROM Customers ORDER BY Country ASC, CustomerName ASC;
+`,
+    outputTemplate: `mysql> source Exp10_SortMultiple.sql;
++------------+---------------+-----------+---------+------+
+| CustomerID | CustomerName  | City      | Country | Age  |
++------------+---------------+-----------+---------+------+
+|          8 | Robert Wilson | Toronto   | Canada  |   38 |
+|          1 | Amit Sharma   | Delhi     | India   |   30 |
+|          7 | Anjali Gupta  | Jaipur    | India   |   22 |
+|          5 | Priya Verma   | Hyderabad | India   |   28 |
+|          3 | Sara Khan     | Mumbai    | India   |   25 |
+|          4 | David Miller  | London    | UK      |   35 |
+|          2 | John Smith    | New York  | USA     |   40 |
+|          6 | Michael Brown | Chicago   | USA     |   45 |
++------------+---------------+-----------+---------+------+
+8 rows in set (0.00 sec)`
+  },
+  {
+    id: 11,
+    title: "11. Inserting New Records",
+    filename: "Exp11_InsertData.sql",
+    code: `-- Program 11: Inserting Data Rows
+-- Executed by: {studentName} | {rollNumber}
+
+-- Q: Insert a new customer record into Customers table.
+INSERT INTO Customers VALUES (9, 'Neha Patel', 'Pune', 'India', 26);
+SELECT * FROM Customers WHERE CustomerID = 9;
+`,
+    outputTemplate: `mysql> source Exp11_InsertData.sql;
+Query OK, 1 row affected (0.01 sec)
+
++------------+--------------+------+---------+------+
+| CustomerID | CustomerName | City | Country | Age  |
++------------+--------------+------+---------+------+
+|          9 | Neha Patel   | Pune | India   |   26 |
++------------+--------------+------+---------+------+
+1 row in set (0.00 sec)`
+  },
+  {
+    id: 12,
+    title: "12. Updating Multiple Records",
+    filename: "Exp12_UpdateData.sql",
+    code: `-- Program 12: Conditional Data Update
+-- Executed by: {studentName} | {rollNumber}
+
+-- Q: Update salary of employees working in IT department by 10%.
+UPDATE Employees SET Salary = Salary + (Salary * 0.10) WHERE Department = 'IT';
+SELECT EmpName, Department, Salary FROM Employees WHERE Department = 'IT';
+`,
+    outputTemplate: `mysql> source Exp12_UpdateData.sql;
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
++----------------+------------+--------+
+| EmpName        | Department | Salary |
++----------------+------------+--------+
+| Rahul Mehta    | IT         |  66000 |
+| Neha Singh     | IT         |  71500 |
+| Karan Malhotra | IT         |  77000 |
++----------------+------------+--------+
+3 rows in set (0.00 sec)`
+  },
+  {
+    id: 13,
+    title: "13. Aggregate Functions (MAX & MIN)",
+    filename: "Exp13_Aggregates.sql",
+    code: `-- Program 13: Summary Statistics extraction
+-- Executed by: {studentName} | {rollNumber}
+
+-- Q: Find minimum salary of employees AND maximum order amount.
+SELECT MIN(Salary) AS Minimum_Salary FROM Employees;
+SELECT MAX(Amount) AS Maximum_Order_Amount FROM Orders;
+`,
+    outputTemplate: `mysql> source Exp13_Aggregates.sql;
++----------------+
+| Minimum_Salary |
++----------------+
+|          40000 |
++----------------+
 1 row in set (0.00 sec)
 
-+----------+
-| COUNT(*) |
-+----------+
-|        6 |
-+----------+
-1 row in set (0.00 sec)
++----------------------+
+| Maximum_Order_Amount |
++----------------------+
+|              7000.00 |
++----------------------+
+1 row in set (0.00 sec)`
+  },
+  {
+    id: 14,
+    title: "14. Pattern Matching (LIKE and IN)",
+    filename: "Exp14_PatternMatch.sql",
+    code: `-- Program 14: LIKE, WILDCARDS and Array Sets
+-- Executed by: {studentName} | {rollNumber}
 
-+----------+-------------+----------+
-| EMP_NAME | SUM(salary) | COUNT(*) |
-+----------+-------------+----------+
-| Amit     |      179000 |        3 |
-| sunita   |      190000 |        2 |
-| mahesh   |      145000 |        1 |
-+----------+-------------+----------+
-3 rows in set (0.00 sec)
+-- Q: Find customers whose name starts with 'A'
+SELECT * FROM Customers WHERE CustomerName LIKE 'A%';
 
-+----------+-------------+
-| EMP_NAME | SUM(salary) |
-+----------+-------------+
-| Amit     |      179000 |
-| sunita   |      190000 |
-| mahesh   |      145000 |
-+----------+-------------+
-3 rows in set (0.00 sec)
+-- Q: Display customers from cities (Delhi, Mumbai, Hyderabad).
+SELECT * FROM Customers WHERE City IN ('Delhi', 'Mumbai', 'Hyderabad');
+`,
+    outputTemplate: `mysql> source Exp14_PatternMatch.sql;
++------------+--------------+--------+---------+------+
+| CustomerID | CustomerName | City   | Country | Age  |
++------------+--------------+--------+---------+------+
+|          1 | Amit Sharma  | Delhi  | India   |   30 |
+|          7 | Anjali Gupta | Jaipur | India   |   22 |
++------------+--------------+--------+---------+------+
+2 rows in set (0.00 sec)
 
-+----------+
-| EMP_NAME |
-+----------+
-| sunita   |
-| sunita   |
-| mahesh   |
-| Amit     |
-| Amit     |
-| Amit     |
-+----------+
-6 rows in set (0.00 sec)
++------------+--------------+-----------+---------+------+
+| CustomerID | CustomerName | City      | Country | Age  |
++------------+--------------+-----------+---------+------+
+|          1 | Amit Sharma  | Delhi     | India   |   30 |
+|          3 | Sara Khan    | Mumbai    | India   |   25 |
+|          5 | Priya Verma  | Hyderabad | India   |   28 |
++------------+--------------+-----------+---------+------+
+3 rows in set (0.00 sec)`
+  },
+  {
+    id: 15,
+    title: "15. Table Joins (INNER JOIN)",
+    filename: "Exp15_InnerJoin.sql",
+    code: `-- Program 15: Cross References and INNER JOIN
+-- Executed by: {studentName} | {rollNumber}
 
-+----------+
-| EMP_NAME |
-+----------+
-| Amit     |
-| Amit     |
-| Amit     |
-| mahesh   |
-| sunita   |
-| sunita   |
-+----------+
-6 rows in set (0.00 sec)
-
-+-------+----------+------+--------+------------+-----------+
-| EMPNO | EMP_NAME | DEPT | salary | DOJ        | branch    |
-+-------+----------+------+--------+------------+-----------+
-| E104  | Amit     | IT   |  67000 | 2020-08-01 | Bangalore |
-| E106  | Amit     | IT   |  67000 | 2020-03-12 | Bangalore |
-+-------+----------+------+--------+------------+-----------+
-2 rows in set (0.00 sec)`
+-- Q: Display customer name with their order amount using INNER JOIN.
+SELECT c.CustomerName, o.Amount 
+FROM Customers c 
+INNER JOIN Orders o ON c.CustomerID = o.CustomerID;
+`,
+    outputTemplate: `mysql> source Exp15_InnerJoin.sql;
++--------------+---------+
+| CustomerName | Amount  |
++--------------+---------+
+| Amit Sharma  | 5000.00 |
+| John Smith   | 7000.00 |
+| Sara Khan    | 3000.00 |
+| Amit Sharma  | 4500.00 |
+| Priya Verma  | 6000.00 |
+| Anjali Gupta | 2000.00 |
++--------------+---------+
+6 rows in set (0.00 sec)`
   }
 ];
