@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gray-900: #111827;
+  --color-gray-50: #f9fafb;
+}
+
+body {
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Print Specific Styles for the PDF Generation */
+@media print {
+  body {
+    background-color: transparent !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+
+  .program-container {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  #page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
